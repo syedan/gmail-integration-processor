@@ -3,19 +3,7 @@ from email.header import decode_header
 import base64
 
 
-    
-
 def modify_message(service, message_id, addLabelIds=[], removeLabelIds=[], user_id="me"):
-  # # Retrieve a list of labels
-  # labels_result = service.users().labels().list(userId='me').execute()
-
-  # # Extract labels from the result
-  # labels = labels_result.get('labels', [])
-
-  # # Print the list of labels
-  # for label in labels:
-  #     print(label['name'])
-
   try:
     post_body = {
         "addLabelIds": addLabelIds,

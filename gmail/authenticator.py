@@ -10,9 +10,7 @@ CREDENTIALS_PATH = "./gmail/credentials.json"
 TOKEN_PATH = "./gmail/token.json"
 
 def authenticate_and_get_service():
-  """Shows basic usage of the Gmail API.
-  Lists the user's Gmail labels.
-  """
+  print("Authenticate with Gmail API...")
   creds = None
   # The file token.json stores the user's access and refresh tokens, and is
   # created automatically when the authorization flow completes for the first

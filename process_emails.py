@@ -21,24 +21,22 @@ def all_rule_objs():
       data_dict = json.load(file)
   return data_dict
   
+  
 #======== Process methods =====
 def process_row(row, service):
    # Run all rules
   for rule_obj in all_rule_objs():
     for rule in rule_obj['rules']:
       factset = {
-        'subject': row.subject
+        'subject': row.subject,
+        'sender': row.sender,
+        'to_emails': row.to_emails
       }
       engine = RuleEngine([rule])
       matched_objs = engine.evaluate(factset)
       if len(matched_objs) > 0:
         process_actions(row, rule_obj['actions'], service)
-        
-      # print(matched_objs, row.id)
-      # print(dir(results[0]))
-      # print(results[0].conditions., results[0].match_details, row.id)
-    # "id": "mark_read", mark_unread, move_message
-  
+
   
 def process_rows(service):
   unprocessed_rows = db_session.query(EmailMessage).filter_by(status='unprocessed').all()
@@ -51,10 +49,26 @@ def process_actions(row, actions, service):
   print(actions)
   for action in actions:
       action_id = action.get('id')
+      action_val = action.get('id')
       if action_id == 'mark_read':
         mark_email_as_read(row, service)
       elif action_id == 'mark_unread':
         mark_email_as_unread(row, service)
+      if action_id == 'add_label':
+        email_add_label(row, action_val, service)
+      elif action_id == 'move_message':
+        email_move_message(row, action_val, service)
+
+def email_add_label(row, label, service):
+    removeLabelIds = [label]
+    modify_message(service, row.message_id, removeLabelIds=removeLabelIds)
+
+def email_move_message(row, moveToLabel, service):
+    standard_labels = ["SPAM", "CATEGORY_SOCIAL", "CATEGORY_FORUMS",
+                       "CATEGORY_UPDATES", "CATEGORY_PERSONAL","CATEGORY_PROMOTIONS"]
+    addLabelIds = [moveToLabel]
+    removeLabelIds = [label for label in standard_labels if label not in addLabelIds]
+    modify_message(service, row.message_id, addLabelIds=addLabelIds, removeLabelIds=removeLabelIds)
 
 def mark_email_as_read(row, service):
     removeLabelIds = ["UNREAD"]
@@ -69,5 +83,3 @@ if __name__ == '__main__':
   service = authenticate_and_get_service()
   run_validations()
   process_rows(service)
-  # user = db_session.query(EmailMessage).offset(2).first()
-  # print(user.message_id, user.timestamp, user.subject, user.sender, user.to_emails, user.label_ids, user.email_type, user.status)

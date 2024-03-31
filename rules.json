@@ -4,16 +4,16 @@
       {
         "name": "basic_rule",
         "conditions": {
-          "any": [
+          "all": [
             {
-              "path": "$.subject",
+              "path": "$.sender",
               "operator": "contains",
-              "value": "Vitamin"
+              "value": "calendar-notification@google.com"
             },
             {
               "path": "$.subject",
               "operator": "contains",
-              "value": "adfasdf"
+              "value": "Vitamin D"
             }
           ]
         }
@@ -24,8 +24,42 @@
         "id": "mark_read"
       },
       {
+        "id": "move_message",
+        "val": "CATEGORY_UPDATES"
+      },
+      {
         "id": "add_label",
-        "label": "label"
+        "val": "STARRED"
+      }
+    ]
+  },
+  {
+    "rules": [
+      {
+        "name": "basic_rule2",
+        "conditions": {
+          "any": [
+            {
+              "path": "$.subject",
+              "operator": "equal",
+              "value": "Welcome to R.test"
+            },
+            {
+              "path": "$.subject",
+              "operator": "equal",
+              "value": "some random value"
+            }
+          ]
+        }
+      }
+    ],
+    "actions": [
+      {
+        "id": "mark_unread"
+      },
+      {
+        "id": "move_message",
+        "val": "CATEGORY_SOCIAL"
       }
     ]
   }

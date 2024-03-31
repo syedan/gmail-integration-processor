@@ -6,6 +6,7 @@ from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 from google.oauth2.credentials import Credentials
 import os
+from database import setup_db
 
 
 def list_messages(service, user_id="me"):
@@ -34,10 +35,7 @@ def decode_message(message):
         print('An error occurred:', e)
         return None
 
-if __name__ == '__main__':
-  # Authenticate and get Gmail service
-  service = authenticator.authenticate_and_get_service()
-  messages = list_messages(service)
+def save_messages(messages):
   for message in messages:
     message_id = message['id']
     msg = get_message(service, message_id)
@@ -51,3 +49,10 @@ if __name__ == '__main__':
         print('Body:', decoded_msg.get_payload())
         print('-----------------------')
     break
+  
+if __name__ == '__main__':
+  setup_db()
+  # Authenticate and get Gmail service
+  service = authenticator.authenticate_and_get_service()
+  messages = list_messages(service)
+  save_messages(messages)

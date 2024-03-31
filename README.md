@@ -17,5 +17,4 @@ deactivate
 ====
 
 docker build -t my-postgres-image .
-
-docker run --name my-postgres-container1 -p 5432:5432 my-postgres-image:latest
+docker run --name my-postgres-container -p 5432:5432 my-postgres-image:latest

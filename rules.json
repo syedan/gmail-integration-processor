@@ -1,0 +1,62 @@
+[
+  {
+    "rules": [
+      {
+        "name": "basic_rule",
+        "conditions": {
+          "all": [
+            {
+              "path": "$.sender",
+              "operator": "contains",
+              "value": "calendar-notification@google.com"
+            },
+            {
+              "path": "$.subject",
+              "operator": "contains",
+              "value": "Vitamin D"
+            }
+          ]
+        }
+      }
+    ],
+    "actions": [
+      {
+        "id": "mark_read"
+      },
+      {
+        "id": "move_message",
+        "val": "CATEGORY_UPDATES"
+      }
+    ]
+  },
+  {
+    "rules": [
+      {
+        "name": "basic_rule2",
+        "conditions": {
+          "any": [
+            {
+              "path": "$.subject",
+              "operator": "equal",
+              "value": "Welcome to R.test"
+            },
+            {
+              "path": "$.subject",
+              "operator": "equal",
+              "value": "some random value"
+            }
+          ]
+        }
+      }
+    ],
+    "actions": [
+      {
+        "id": "mark_unread"
+      },
+      {
+        "id": "move_message",
+        "val": "CATEGORY_SOCIAL"
+      }
+    ]
+  }
+]

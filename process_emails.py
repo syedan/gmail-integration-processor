@@ -49,19 +49,13 @@ def process_actions(row, actions, service):
   print(actions)
   for action in actions:
       action_id = action.get('id')
-      action_val = action.get('id')
+      action_val = action.get('val')
       if action_id == 'mark_read':
         mark_email_as_read(row, service)
       elif action_id == 'mark_unread':
         mark_email_as_unread(row, service)
-      if action_id == 'add_label':
-        email_add_label(row, action_val, service)
       elif action_id == 'move_message':
         email_move_message(row, action_val, service)
-
-def email_add_label(row, label, service):
-    removeLabelIds = [label]
-    modify_message(service, row.message_id, removeLabelIds=removeLabelIds)
 
 def email_move_message(row, moveToLabel, service):
     standard_labels = ["SPAM", "CATEGORY_SOCIAL", "CATEGORY_FORUMS",

@@ -26,10 +26,6 @@
       {
         "id": "move_message",
         "val": "CATEGORY_UPDATES"
-      },
-      {
-        "id": "add_label",
-        "val": "STARRED"
       }
     ]
   },

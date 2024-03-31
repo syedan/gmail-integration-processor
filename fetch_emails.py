@@ -9,11 +9,35 @@ from gmail.api import list_messages, get_message, decode_message, decode_email_s
 def save_messages(messages):
   count= 0
   for message in messages:
-    count=count+1
     message_id = message['id']
     msg_json = get_message(service, message_id)
-    # print(msg_json)
     decoded_msg = decode_message(msg_json)
+
+    # existing_message = db_session.query(EmailMessage).filter_by(message_id=msg_json['id']).first()
+    # if existing_message:
+    #   continue
+   
+    count=count+1
+    label_ids = msg_json.get('labelIds', [])
+    email_type = "sent" if "SENT" in label_ids else "received"
+    new_message = EmailMessage(
+        message_id=msg_json['id'],
+        timestamp=datetime.now(),
+        subject=decode_email_subject(decoded_msg['Subject']),
+        sender=decoded_msg['From'],
+        to_emails=decoded_msg['To'],
+        label_ids=label_ids,
+        email_type=email_type,
+        raw_data=msg_json,
+        status='unprocessed'
+    )
+    db_session.add(new_message)
+    db_session.commit() 
+    
+    if count > 5:
+      break
+      
+      
     # print(decoded_msg.keys())
     # for key in decoded_msg.keys():
     #     if key in decoded_msg:
@@ -24,7 +48,7 @@ def save_messages(messages):
     # print(dir(decoded_msg))
     # print(decoded_msg.get_payload()[0])
     
-    if decoded_msg:
+    # if decoded_msg:
       # print('From:', decoded_msg['From'])
       # print('Subject:', decoded_msg['Subject'])
       # print('Body:', decoded_msg.get_payload())
@@ -32,25 +56,6 @@ def save_messages(messages):
       
       #       # TODO: Add payload, threadid
       # thread_id=msg_json['threadId'],
-
-      label_ids = msg_json.get('labelIds', [])
-      email_type = "sent" if "SENT" in label_ids else "received"
-      new_message = EmailMessage(
-          message_id=msg_json['id'],
-          timestamp=datetime.now(),
-          subject=decode_email_subject(decoded_msg['Subject']),
-          sender=decoded_msg['From'],
-          to_emails=decoded_msg['To'],
-          label_ids=label_ids,
-          email_type=email_type,
-          raw_data=msg_json,
-          status='unprocessed'
-      )
-      db_session.add(new_message)
-      db_session.commit() 
-      
-      if count > 5:
-        break
       # new_message = EmailMessage(
       #     message_id='example_message_id',
       #     timestamp=datetime.now(),

@@ -2,6 +2,32 @@ import email
 from email.header import decode_header
 import base64
 
+
+    
+
+def modify_message(service, message_id, addLabelIds=[], removeLabelIds=[], user_id="me"):
+  # # Retrieve a list of labels
+  # labels_result = service.users().labels().list(userId='me').execute()
+
+  # # Extract labels from the result
+  # labels = labels_result.get('labels', [])
+
+  # # Print the list of labels
+  # for label in labels:
+  #     print(label['name'])
+
+  try:
+    post_body = {
+        "addLabelIds": addLabelIds,
+        "removeLabelIds": removeLabelIds
+    }
+    results = service.users().messages().modify(userId=user_id, id=message_id, body=post_body).execute()
+    messages = results.get("messages", [])
+    return messages
+  except Exception as e:
+    print('An error occurred:', e)
+    return []
+
 def list_messages(service, user_id="me"):
   try:
     results = service.users().messages().list(userId=user_id).execute()

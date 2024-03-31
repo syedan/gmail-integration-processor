@@ -1,0 +1,32 @@
+[
+  {
+    "rules": [
+      {
+        "name": "basic_rule",
+        "conditions": {
+          "any": [
+            {
+              "path": "$.subject",
+              "operator": "contains",
+              "value": "Vitamin"
+            },
+            {
+              "path": "$.subject",
+              "operator": "contains",
+              "value": "adfasdf"
+            }
+          ]
+        }
+      }
+    ],
+    "actions": [
+      {
+        "id": "mark_read"
+      },
+      {
+        "id": "add_label",
+        "label": "label"
+      }
+    ]
+  }
+]

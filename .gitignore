@@ -1,8 +1,8 @@
 happyfox/
 myenv/
-assignment.pdf
-token.json
-credentials.json
+assignment-details/
+gmail/token.json
+gmail/credentials.json
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

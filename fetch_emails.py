@@ -1,52 +1,9 @@
-import base64
 from datetime import datetime
-import email
-import json
-import authenticator
-from googleapiclient.discovery import build
-from googleapiclient.errors import HttpError
-from google.oauth2.credentials import Credentials
-import os
+from gmail.authenticator import authenticate_and_get_service
 from db.config import db_session
 from db.database import setup_db
 from db.models import EmailMessage
-from email.header import decode_header
-
-def list_messages(service, user_id="me"):
-  try:
-    results = service.users().messages().list(userId=user_id).execute()
-    messages = results.get("messages", [])
-    return messages
-  except Exception as e:
-    print('An error occurred:', e)
-    return []
-    
-def get_message(service, message_id, user_id='me'):
-    try:
-        message = service.users().messages().get(userId=user_id, id=message_id, format='raw').execute()
-        return message
-    except Exception as e:
-        print('An error occurred:', e)
-        return None
-
-def decode_message(message):
-    try:
-        msg_str = base64.urlsafe_b64decode(message['raw'].encode('ASCII'))
-        mime_msg = email.message_from_bytes(msg_str)
-        return mime_msg
-    except Exception as e:
-        print('An error occurred:', e)
-        return None
-
-
-def decode_email_subject(subject):
-    decoded_parts = decode_header(subject)
-    decoded_subject = ''.join(
-        part[0].decode(part[1] or 'ascii') if isinstance(part[0], bytes) else part[0]
-        for part in decoded_parts
-    )
-    return decoded_subject
-
+from gmail.api import list_messages, get_message, decode_message, decode_email_subject
 
 
 def save_messages(messages):
@@ -117,9 +74,9 @@ def save_messages(messages):
 if __name__ == '__main__':
   setup_db()
   # Authenticate and get Gmail service
-  service = authenticator.authenticate_and_get_service()
+  service = authenticate_and_get_service()
   messages = list_messages(service)
   save_messages(messages)
   
   # user = db_session.query(EmailMessage).offset(2).first()
-  # print(user.message_id, user.timestamp, user.subject, user.sender, user.recipients, user.label_ids, user.email_type, user.status, user.raw_data)
+  # print(user.message_id, user.timestamp, user.subject, user.sender, user.to_emails, user.label_ids, user.email_type, user.status)
